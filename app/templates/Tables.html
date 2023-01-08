@@ -1,0 +1,96 @@
+{% load static %}
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/st.css' %}"/>
+</head>
+<div >
+	<div style="padding:30px;">
+		<button class="TabBtn" id="TabBtn" onclick="AfficherTableau()"> Afficher le tableau </button>
+	</div>
+
+</div>
+<div id="tempTable" style="display:none; margin:30px ">
+	<table class="table table-bordered" border="solid" id="dataTable" width="100%" cellspacing="0">
+	<thead>
+		<tr>
+			<td><b>N</b></td>
+			<td><b>Température</b></td>
+			<td><b>Date:Heure</b></td>
+		</tr>
+	</thead>
+	<tbody>
+		{% for i in tab reversed %}
+		<tr>
+		<td>{{i.id}}</td>
+		<td>{{i.temp}}</td>
+		<td>{{i.dt}}</td>
+		{%endfor%}
+	</tbody>
+	</table>
+</div>
+</html>
+
+<script>
+	function AfficherTableau(){
+		const tempTable = document.getElementById('tempTable');
+		const TabBtn = document.getElementById('TabBtn');
+		if (tempTable.style.display === "none") {
+			tempTable.style.display = "block";
+			TabBtn.textContent = "Masquer le tableau"
+		} else {
+			tempTable.style.display = "none";
+			TabBtn.textContent = "Afficher le tableau";
+		}
+	}
+	function AfficherGraphe(){
+		const graphe = document.getElementById('graphe');
+		const graphBtn = document.getElementById('graphBtn');
+		if (graphe.style.display === "none") {
+			graphe.style.display = "block";
+			graphBtn.textContent = "Masquer le graphe"
+		} else {
+			graphe.style.display = "none";
+			graphBtn.textContent = "Afficher le graphe";
+		}
+	}
+</script>
+<div style="padding:20px;">
+	<button class="TabBtn" id="graphBtn" onclick="AfficherGraphe()"> Afficher le graphe </button>
+</div>
+<div class="card-body">
+	<div style="margin:30px;display:none;" id="graphe">
+		<canvas id="myAreaChart" width="100%" height="60"></canvas>
+	</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+</div>
+</html>
+
+<script>
+const dates = [{% for i in tab %} '{{i.dt}}', {% endfor %}];
+const datas = [{% for i in tab %} '{{i.temp}}', {% endfor %}];
+var ctx = document.getElementById('myAreaChart').getContext('2d');
+var myChart = new Chart(ctx, {
+type: 'line',
+data: {
+labels: dates,
+scaleShowLabels : false,
+datasets: [{
+label: 'Température',
+data:datas,
+borderColor: [
+'rgba(0,0,2,1 )',
+],
+borderWidth: 1
+}]
+},
+options: {
+scales: {
+yAxes: [{
+ticks: {
+beginAtZero: true
+}
+}]
+}
+}
+});
+</script>
